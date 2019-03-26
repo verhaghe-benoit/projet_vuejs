@@ -1,15 +1,14 @@
 <template>
-    <v-container>
-        
+    <v-container> 
         <v-flex ma-2>
-            <v-btn-toggle align-content-center>
-                <v-btn flat class='filterMode === "all" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'all'">
+            <v-btn-toggle align-content-center v-model="filterMode">
+                <v-btn flat value="all">
                     All
                 </v-btn>
-                <v-btn flat class='filterMode === "inBuyMode" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'inBuyMode'">
+                <v-btn flat value="inBuyMode">
                     Purchased
                 </v-btn>
-                <v-btn flat class='filterMode === "notinBuyMode" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'notinBuyMode'">
+                <v-btn flat value="notinBuyMode">
                     In Stand by
                 </v-btn>
             </v-btn-toggle>
@@ -28,13 +27,13 @@
                     </v-flex>
                     <v-spacer>
                     </v-spacer>
-                    <v-list-tile-content class="align-end">Total de la liste {{itemsList.name}} : {{ total }}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">Total of {{itemsList.name}} : {{ total }}</v-list-tile-content>
                 </v-layout>
             </v-container>
         </v-card>
 
         <v-card class="mx-2">
-            <v-form v-model="valid">
+            <v-form>
                 <v-container>
                     <v-layout>
                         <v-flex xs12 md4 align-content-space-around>
@@ -57,10 +56,14 @@
                 </v-container>
             </v-form>
         </v-card>
+
+        <v-alert :value="alert" type="error" class="ma-2">
+            Warning ! You are exceeding your budget !
+        </v-alert>
         
 
         <v-data-iterator
-        :items="itemsList.list"
+        :items="listFilter"
         content-tag="v-layout"
         row
         wrap
@@ -101,8 +104,8 @@ export default {
     data: () =>  ({
         name: '',
         itemName: '',
-        itemsLists: [],
-        itemsList: [],
+        itemsLists: {},
+        itemsList: {},
         filterMode: 'all'
     }),
 
@@ -118,8 +121,8 @@ export default {
         },
 
         deleteItem (index) {
-        this.itemsList.list = this.itemsList.list.filter(i => i.index !== index)
-        this.updateIndexes()
+            this.itemsList.list = this.itemsList.list.filter(i => i.index !== index)
+            this.updateIndexes()
         },
 
         updateIndexes () {
@@ -172,7 +175,15 @@ export default {
 
         alert () {
             return this.total > this.itemsList.budget
-        }
+        },
+
+        listFilter() {
+            if(this.filterMode === 'notinBuyMode')
+                return this.itemsList.list.filter(i => !i.inBuyMode)
+            else if(this.filterMode === 'inBuyMode')
+                return this.itemsList.list.filter(i => i.inBuyMode)
+            return this.itemsList.list
+        },
     },
 }
 </script>

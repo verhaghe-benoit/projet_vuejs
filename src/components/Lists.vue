@@ -39,7 +39,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="lists"
+        :items="itemsLists.lists"
         class="elevation-1"
         hide-actions
       >
@@ -61,6 +61,7 @@
 export default {
   data: () => ({
     lists: [],
+    itemsLists: {},
     headers: [{
       text: 'Name',
       value: 'name',
@@ -83,12 +84,12 @@ export default {
     alert: false
   }),
   mounted () {
-    this.lists = JSON.parse(window.localStorage.getItem('itemsLists')).lists || []
+    this.itemsLists = JSON.parse(window.localStorage.getItem('itemsLists')) || {}
   },
   methods: {
     deleteList (name) {
-      this.lists = this.lists.filter(l => l.name !== name)
-      window.localStorage.setItem('itemsLists',JSON.stringify(this.lists))
+      this.itemsLists.lists = this.itemsLists.lists.filter(l => l.name !== name)
+      window.localStorage.setItem('itemsLists',JSON.stringify(this.itemsLists))
     },
     cancel () {
       this.name = ''
