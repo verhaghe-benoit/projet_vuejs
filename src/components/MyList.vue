@@ -37,12 +37,14 @@
                 <v-container>
                     <v-layout>
                         <v-flex xs12 md4 align-content-space-around>
-                        <v-text-field
+                        <v-select
+                            v-bind:items="words"
                             v-model="itemName"
                             label="Item name"
                             required
                             hide-details
-                        ></v-text-field>
+                            autocomplete
+                        ></v-select>
                         </v-flex>
                         <v-spacer>
                         </v-spacer>
@@ -106,7 +108,17 @@ export default {
         itemName: '',
         itemsLists: {},
         itemsList: {},
-        filterMode: 'all'
+        filterMode: 'all',
+        words: [
+            "Banana",
+            "Avocado",
+            "Steack",
+            "Salad",
+            "Salmon",
+            "Tomato",
+            "Orange",
+            "Brocoli"
+        ]
     }),
 
     methods: {
