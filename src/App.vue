@@ -1,21 +1,22 @@
 <template>
-  <div id="app">
-    <p>
-      <router-link to="/">Home</router-link>
-      <router-link to="/lists">Lists</router-link>
-      <router-link to="/list">My list</router-link>
-    </p>
-    <router-view></router-view>
-  </div>
+  <v-app dark>
+    <v-content>
+      <v-toolbar color="red">
+        <v-toolbar-title>Shopping List</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items class="hidden-sm-and-down">
+          <v-btn flat to='/'>Home</v-btn>
+          <v-btn flat to='/lists'>Lists</v-btn>
+          <v-btn flat to='/about'>About</v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <router-view></router-view>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-
 export default {
-  name: 'app',
+  name: 'App'
 }
 </script>
-
-<style>
-@import '../node_modules/bootstrap/dist/css/bootstrap.css';
-</style>

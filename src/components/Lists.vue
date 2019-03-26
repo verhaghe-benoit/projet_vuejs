@@ -83,7 +83,7 @@ export default {
     alert: false
   }),
   mounted () {
-    this.lists = JSON.parse(window.localStorage.getItem('itemsLists')) || []
+    this.lists = JSON.parse(window.localStorage.getItem('itemsLists')).lists || []
   },
   methods: {
     deleteList (name) {
