@@ -1,57 +1,92 @@
 <template>
-    <form id="shopping-list">
-        <h1>Budget :  <input type="number" v-model="itemsList.budget"></h1>
-        <h2> {{itemsList.name}} : {{ total }} </h2>
-        <!--<div class="alert alert-danger w-25" role="alert" v-if="alert">
-                Warning ! You are exceeding your budget !
-        </div>-->
-        <!--<list :items="itemsList" class="mt-3"></list>-->
-        <v-alert
-            :value="alert"
-            type="error"
-        >
-             Warning ! You are exceeding your budget !
-        </v-alert>
-        <div>
-        <div class="btn-group mb-3" size="sm" role="group">
-            <button type="button" :class='filterMode === "all" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'all'">All</button>
-            <button type="button" :class='filterMode === "inBuyMode" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'inBuyMode'">Purchased</button>
-            <button type="button" :class='filterMode === "notinBuyMode" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'notinBuyMode'">In StandBy</button>
-        </div>
-        <table id="shopping-list-table" class="table table-condensed table-hover">
-            <thead>
-                <tr>
-                    <th>Price</th>
-                    <th>Item</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tr v-for="(item, index) in itemsList.list" :key="index">
-                <td v-if="item.inBuyMode">
-                    <input type="number" v-model="item.price">
-                </td>
-                <td v-else>
-                    <span >{{ item.price }}</span>
-                </td>
-                <td>
-                    <span>{{ item.name }}</span>
-                </td>
-                <td>
-                    <input type="checkbox" v-model="item.inBuyMode"/>
-                    <button type="button" class="btn btn-danger" @click="deleteItem(index)"><i class="fa fa-remove"></i> Delete  </button>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <v-container>
+        
+        <v-flex ma-2>
+            <v-btn-toggle align-content-center>
+                <v-btn flat class='filterMode === "all" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'all'">
+                    All
+                </v-btn>
+                <v-btn flat class='filterMode === "inBuyMode" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'inBuyMode'">
+                    Purchased
+                </v-btn>
+                <v-btn flat class='filterMode === "notinBuyMode" ? "btn btn-primary" : "btn btn-secondary"' @click="filterMode = 'notinBuyMode'">
+                    In Stand by
+                </v-btn>
+            </v-btn-toggle>
+        </v-flex>
 
-        <h4>Add new item</h4>
-        <div class="row col-md-6">
-            <div class="col-md-6 form-group"> Name
-                <input type="text" v-model="itemName">
-            </div>
-            <button type="button" @click="addItem" class="btn btn-primary" > Add  </button>
-        </div>
-    </form>
+        <v-card class="ma-2">
+            <v-container>
+                <v-layout>
+                    <v-flex xs12 md4 align-content-space-around>
+                    <v-text-field
+                        v-model="itemsList.budget"
+                        label="Budget"
+                        required
+                        hide-details
+                    ></v-text-field>
+                    </v-flex>
+                    <v-spacer>
+                    </v-spacer>
+                    <v-list-tile-content class="align-end">Total de la liste {{itemsList.name}} : {{ total }}</v-list-tile-content>
+                </v-layout>
+            </v-container>
+        </v-card>
+
+        <v-card class="mx-2">
+            <v-form v-model="valid">
+                <v-container>
+                    <v-layout>
+                        <v-flex xs12 md4 align-content-space-around>
+                        <v-text-field
+                            v-model="itemName"
+                            label="Item name"
+                            required
+                            hide-details
+                        ></v-text-field>
+                        </v-flex>
+                        <v-spacer>
+                        </v-spacer>
+                        <v-btn
+                            color="error"
+                            @click="addItem" 
+                        >
+                            Add
+                        </v-btn>
+                    </v-layout>
+                </v-container>
+            </v-form>
+        </v-card>
+        
+
+        <v-data-iterator
+        :items="itemsList.list"
+        content-tag="v-layout"
+        row
+        wrap
+        hide-actions
+        >
+            <template v-slot:item="props">
+                <v-flex xs12 sm6 md4 lg3 ma-2>
+                    <v-card>
+                        <v-card-title><h4>{{ props.item.name }}</h4></v-card-title>
+                        <v-divider></v-divider>
+                        <v-list dense>
+                            <v-list-tile>
+                                <v-text-field  label="Price" v-model="props.item.price" class="align-end">{{ props.item.price }}</v-text-field>
+                            </v-list-tile>      
+                            <v-list-tile>
+                                <v-checkbox label="Purchased" v-model="props.item.inBuyMode" class="align-end"></v-checkbox>
+                            </v-list-tile>  
+                            <v-list-tile>
+                                <v-btn color="error" @click="deleteItem(props.item.index)"> Delete  </v-btn> 
+                            </v-list-tile>    
+                        </v-list>
+                    </v-card>
+                </v-flex>
+            </template>
+        </v-data-iterator>
+    </v-container>
 </template>
 
 <script>
@@ -128,9 +163,9 @@ export default {
 
         list () {
             if(this.filterMode === 'notinBuyMode')
-                return this.itemsList.filter(i => !i.inBuyMode)
+                return this.itemsList.list.filter(i => !i.inBuyMode)
             else if(this.filterMode === 'inBuyMode')
-                return this.itemsList.filter(i => i.inBuyMode)
+                return this.itemsList.list.filter(i => i.inBuyMode)
             else
                 return this.itemsList
         },
@@ -144,23 +179,4 @@ export default {
 
 
 <style scoped>
-body {
-    padding: 1%;
-    background-color: #abca
-}
-  
-h2, h4 {
-    font-family: 'Nunito', sans-serif;
-}
-  
-
-#shopping-list-table{
-    table-layout: fixed;
-    width: 50%;
-    vertical-align: middle;
-}
-  
-button {
-    margin-left: 2%;
-}
 </style>

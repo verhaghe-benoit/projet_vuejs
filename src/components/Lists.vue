@@ -7,7 +7,7 @@
         <v-spacer/>
         <v-dialog v-model="dialog" persistent max-width="600px">
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark v-on="on">New</v-btn>
+            <v-btn color="error" dark v-on="on">New</v-btn>
           </template>
           <v-card>
             <v-card-title>
